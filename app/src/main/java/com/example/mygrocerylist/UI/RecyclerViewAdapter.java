@@ -175,12 +175,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     grocery.setQuantity(quantity.getText().toString());
 
                     if (!groceryItem.getText().toString().isEmpty()
-                    && !quantity.getText().toString().isEmpty()) {
+                            && !quantity.getText().toString().isEmpty()) {
                         db.updateGrocery(grocery);
                         notifyItemChanged(getAdapterPosition(), grocery);
-                    }else {
+                    } else {
                         Snackbar.make(view, "Add grocery andQuantity", Snackbar.LENGTH_LONG).show();
                     }
+
+                    dialog.dismiss();
                 }
             });
         }
