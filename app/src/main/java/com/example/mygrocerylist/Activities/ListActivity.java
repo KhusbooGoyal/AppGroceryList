@@ -55,5 +55,20 @@ public class ListActivity extends AppCompatActivity {
         //Get items from database
         groceryList = db.getAllGroceries();
 
+        for (Grocery c: groceryList) {
+            Grocery grocery = new Grocery();
+            grocery.setName(c.getName());
+            grocery.setQuantity("Qty: " + c.getQuantity());
+            grocery.setId(c.getId());
+            grocery.setDateItemAdded("Added on: "+ c.getDateItemAdded());
+
+            listItems.add(grocery);
+
+        }
+
+        recyclerViewAdapter = new RecyclerViewAdapter(this, listItems);
+        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter.notifyDataSetChanged();
+
     }
 }
