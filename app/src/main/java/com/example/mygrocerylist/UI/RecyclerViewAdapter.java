@@ -92,10 +92,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.editButton:
+
                     break;
                 case R.id.deleteButton:
+
                     break;
             }
+        }
+
+        public void deleteItem(int id) {
+
         }
     }
 }
