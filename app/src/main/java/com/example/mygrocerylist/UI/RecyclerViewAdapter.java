@@ -1,5 +1,6 @@
 package com.example.mygrocerylist.UI;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mygrocerylist.Activities.DetailsActivity;
+import com.example.mygrocerylist.Data.DatabaseHandler;
 import com.example.mygrocerylist.Model.Grocery;
 import com.example.mygrocerylist.R;
 
@@ -19,6 +21,9 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     public static Context context;
     public static List<Grocery> groceryItems;
+    private  static AlertDialog.Builder alertDialogBuilder;
+    private static AlertDialog dialog;
+    private  static LayoutInflater inflater;
 
     public RecyclerViewAdapter(Context context, List<Grocery> groceryItems) {
         this.context = context;
@@ -48,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return groceryItems.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //private final Object context;
         public TextView groceryItemName;
         public TextView quantity;
@@ -95,13 +100,46 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                     break;
                 case R.id.deleteButton:
-
+                    int position = getAdapterPosition();
+                    Grocery grocery = groceryItems.get(position);
+                    deleteItem(grocery.getId());
                     break;
             }
         }
 
-        public void deleteItem(int id) {
+        public void deleteItem(final int id) {
 
+            //create an AlertDialog
+            alertDialogBuilder = new AlertDialog.Builder(context);
+
+            inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.confirmation_dialog, null);
+            Button noButton = (Button) view.findViewById(R.id.noButton);
+            Button yesButton = (Button) view.findViewById(R.id.yesButton);
+
+            alertDialogBuilder.setView(view);
+            dialog = alertDialogBuilder.create();
+            dialog.show();
+
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            yesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //delete the item
+                    DatabaseHandler db = new DatabaseHandler(context);
+                    //delete item
+                    db.deleteGrocery(id);
+                    groceryItems.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+
+                    dialog.dismiss();
+                }
+            });
         }
     }
 }
